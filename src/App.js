@@ -1,25 +1,43 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+import Loading from './Loading';
+import axios from 'axios';
+import Hero from './Hero';
+import CardsContainer from './CardsContainer';
+import Footer from './Footer';
 
-function App() {
+const App = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getData = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `https://rickandmortyapi.com/api/character/1,2,3,4,5,6,7`
+        );
+        setData(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getData();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Hero />
+      <div className="App">
+        <header className="App-header">
+          {loading && <Loading />}
+          {!loading && <CardsContainer characters={data} />} {CardsContainer}
+        </header>
+      </div>
+      <Footer />
     </div>
   );
-}
+};
 
 export default App;
